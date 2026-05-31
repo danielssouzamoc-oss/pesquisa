@@ -1,0 +1,849 @@
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing — Sala Secreta Simple</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0E2E;
+  --bg-soft: #131A4D;
+  --bg-card: #1A2156;
+  --bg-elev: #232B6B;
+  --text: #F5F5F5;
+  --text-soft: #B0BCEA;
+  --text-mute: #8090C0;
+  --accent: #4A7CFF;
+  --accent-light: #6B96FF;
+  --accent-soft: #8BA9FF;
+  --line: #2A3170;
+  --green: #2A9D8F;
+  --red: #E76F51;
+  --yellow: #F4A261;
+  --font-sans: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Menlo', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+.sidebar {
+  position: sticky; top: 0; left: 0;
+  height: 100vh;
+  background: var(--bg-soft);
+  border-right: 1px solid var(--line);
+  padding: 32px 24px;
+  overflow-y: auto;
+}
+.brand {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;
+  color: var(--text);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.brand .dot { color: var(--accent); }
+.brand-sub {
+  font-size: 0.75rem;
+  color: var(--text-mute);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+.nav-group { margin-bottom: 28px; }
+.nav-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.nav a {
+  display: block;
+  color: var(--text-soft);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  margin-bottom: 2px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+.nav a:hover { background: var(--bg-card); color: var(--text); border-left-color: var(--accent); }
+.nav a.active { background: var(--bg-card); color: var(--accent-light); border-left-color: var(--accent); }
+.nav a .pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--bg-elev);
+  color: var(--text-mute);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+.main { padding: 64px 80px; max-width: 1100px; }
+
+h1 { font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 24px; }
+h2 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin-top: 56px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+h3 { font-size: 1.35rem; font-weight: 600; margin-top: 36px; margin-bottom: 14px; color: var(--accent-light); }
+h4 { font-size: 1.05rem; font-weight: 600; margin-top: 24px; margin-bottom: 10px; color: var(--text); }
+p { font-size: 1rem; color: var(--text-soft); margin-bottom: 14px; max-width: 80ch; }
+p.lead { font-size: 1.15rem; color: var(--text); line-height: 1.6; }
+strong { color: var(--text); font-weight: 600; }
+em { color: var(--accent-light); font-style: normal; font-weight: 500; }
+code { font-family: var(--font-mono); font-size: 0.88em; background: var(--bg-card); padding: 2px 6px; border-radius: 4px; color: var(--accent-soft); }
+hr { border: none; border-top: 1px solid var(--line); margin: 48px 0; }
+blockquote { border-left: 3px solid var(--accent); background: var(--bg-card); padding: 16px 22px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+blockquote p { color: var(--text); margin: 0; }
+blockquote p + p { margin-top: 10px; }
+
+ul, ol { margin: 14px 0 18px 0; padding-left: 24px; color: var(--text-soft); }
+ul li, ol li { margin-bottom: 6px; font-size: 1rem; }
+ul li::marker { color: var(--accent); }
+ol li::marker { color: var(--accent); font-weight: 600; }
+
+.table-wrap { overflow-x: auto; margin: 24px 0; border-radius: 8px; border: 1px solid var(--line); }
+table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+th { background: var(--bg-elev); color: var(--text); font-weight: 600; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; }
+td { padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--text-soft); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-soft); }
+
+.card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 10px; padding: 28px; margin: 20px 0; }
+.card-grid { display: grid; gap: 16px; margin: 20px 0; }
+.card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+.metric-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 10px; padding: 24px; text-align: center; }
+.metric-card .num { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 700; color: var(--accent); line-height: 1; }
+.metric-card .lbl { font-size: 0.85rem; color: var(--text-mute); margin-top: 8px; letter-spacing: 0.05em; }
+
+.eyebrow { display: inline-block; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); background: rgba(74, 124, 255, 0.1); padding: 4px 12px; border-radius: 4px; font-weight: 600; margin-bottom: 16px; }
+
+.section { padding-top: 24px; margin-top: -24px; }
+
+.highlight-box { background: linear-gradient(135deg, rgba(74,124,255,0.12) 0%, rgba(74,124,255,0.04) 100%); border-left: 3px solid var(--accent); padding: 20px 24px; border-radius: 0 8px 8px 0; margin: 24px 0; }
+.highlight-box .label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+
+.warning-box { background: linear-gradient(135deg, rgba(244,162,97,0.12) 0%, rgba(244,162,97,0.04) 100%); border-left: 3px solid var(--yellow); padding: 20px 24px; border-radius: 0 8px 8px 0; margin: 24px 0; }
+.warning-box .label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--yellow); font-weight: 600; margin-bottom: 8px; }
+
+.success-box { background: linear-gradient(135deg, rgba(42,157,143,0.12) 0%, rgba(42,157,143,0.04) 100%); border-left: 3px solid var(--green); padding: 20px 24px; border-radius: 0 8px 8px 0; margin: 24px 0; }
+.success-box .label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 8px; }
+
+.big-quote { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 40px; text-align: center; margin: 28px 0; }
+.big-quote p { font-size: clamp(1.2rem, 2vw, 1.6rem); line-height: 1.4; color: var(--text); margin: 0 auto; max-width: none; font-weight: 500; }
+.big-quote .accent { color: var(--accent); font-weight: 700; }
+
+.pillar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0; }
+.pillar-item { background: var(--bg-card); border: 1px solid var(--line); border-radius: 10px; padding: 24px; }
+.pillar-item .num { font-family: var(--font-mono); font-size: 1.2rem; color: var(--accent); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.1em; }
+.pillar-item h4 { margin-top: 0; font-size: 1.15rem; color: var(--text); margin-bottom: 8px; }
+.pillar-item p { font-size: 0.95rem; color: var(--text-soft); margin: 0; }
+
+.timeline { margin: 24px 0; }
+.timeline-item { display: grid; grid-template-columns: 130px 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.timeline-item:last-child { border-bottom: none; }
+.timeline-time { font-family: var(--font-mono); font-size: 0.95rem; color: var(--accent); font-weight: 600; }
+.timeline-content h4 { margin: 0 0 4px 0; font-size: 1rem; }
+.timeline-content p { margin: 0; font-size: 0.92rem; color: var(--text-mute); }
+
+.do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.do-dont-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+.do-dont-card.do { border-left: 3px solid var(--green); }
+.do-dont-card.dont { border-left: 3px solid var(--red); }
+.do-dont-card h4 { margin-top: 0; }
+.do-dont-card.do h4 { color: var(--green); }
+.do-dont-card.dont h4 { color: var(--red); }
+
+.topbar { display: none; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: fixed; top: 0; left: -280px; z-index: 100; transition: left 0.3s; width: 280px; }
+  .sidebar.open { left: 0; }
+  .topbar { display: flex; padding: 16px; background: var(--bg-soft); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; align-items: center; gap: 12px; }
+  .topbar button { background: var(--bg-card); border: 1px solid var(--line); color: var(--text); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-family: var(--font-sans); }
+  .main { padding: 32px 24px; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  .card-grid.cols-2, .card-grid.cols-3, .card-grid.cols-4 { grid-template-columns: 1fr; }
+  .pillar-grid { grid-template-columns: 1fr; }
+  .do-dont { grid-template-columns: 1fr; }
+  .timeline-item { grid-template-columns: 1fr; gap: 4px; }
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg-elev); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button onclick="document.querySelector('.sidebar').classList.toggle('open')">☰ Menu</button>
+  <span style="color: var(--text);">Briefing — Sala Secreta</span>
+</div>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="brand">SIMPLE<span class="dot">.</span></div>
+  <div class="brand-sub">Briefing Estratégico</div>
+
+  <div class="nav-group">
+    <div class="nav-title">Briefing Estratégico</div>
+    <nav class="nav">
+      <a href="#contexto" class=""><span class="pill">01</span>Contexto</a>
+      <a href="#objetivo" class=""><span class="pill">02</span>Objetivo de negócio</a>
+      <a href="#icp" class=""><span class="pill">03</span>ICP do evento</a>
+      <a href="#mecanismo" class=""><span class="pill">04</span>Mecanismo (4 Pilares)</a>
+      <a href="#nome" class=""><span class="pill">05</span>Nome do método</a>
+      <a href="#promessa" class=""><span class="pill">06</span>Promessa do evento</a>
+      <a href="#oferta" class=""><span class="pill">07</span>Frame da oferta</a>
+      <a href="#tensao" class=""><span class="pill">08</span>4 pontos de tensão</a>
+      <a href="#voz" class=""><span class="pill">09</span>Voz e tom</a>
+      <a href="#frameworks" class=""><span class="pill">10</span>Frameworks de copy</a>
+      <a href="#estrutura" class=""><span class="pill">11</span>Estrutura do roteiro</a>
+      <a href="#riscos" class=""><span class="pill">12</span>Riscos e mitigações</a>
+    </nav>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-title">Big Idea</div>
+    <nav class="nav">
+      <a href="#bigidea-oficial" class=""><span class="pill">→</span>A Big Idea oficial</a>
+      <a href="#bigidea-usos" class=""><span class="pill">→</span>Versões de uso</a>
+      <a href="#bigidea-justi" class=""><span class="pill">→</span>Por que funciona</a>
+      <a href="#bigidea-estrutura" class=""><span class="pill">→</span>Como estrutura o roteiro</a>
+    </nav>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-title">Objetivos &amp; KPIs</div>
+    <nav class="nav">
+      <a href="#meta" class=""><span class="pill">→</span>Meta principal</a>
+      <a href="#funil" class=""><span class="pill">→</span>Funil esperado</a>
+      <a href="#kpi-vivo" class=""><span class="pill">→</span>KPIs em tempo real</a>
+      <a href="#kpi-pos" class=""><span class="pill">→</span>KPIs pós-evento</a>
+      <a href="#cenarios" class=""><span class="pill">→</span>Cenários "e se"</a>
+      <a href="#sucesso" class=""><span class="pill">→</span>Definição de sucesso</a>
+    </nav>
+  </div>
+</aside>
+
+<main class="main">
+
+<div class="eyebrow">Briefing Estratégico · 01/06/2026</div>
+<h1>Sala Secreta Simple<br>— Briefing &amp; Big Idea</h1>
+<p class="lead">Documento estratégico consolidado: contexto, ICP, mecanismo, big idea, promessa, frame de oferta, roteiro, KPIs e cenários. Esta é a fonte única de verdade para a sala de segunda 01/06, 20h, Google Meet.</p>
+
+<div class="card-grid cols-4">
+  <div class="metric-card">
+    <div class="num">01/06</div>
+    <div class="lbl">Segunda · 20h</div>
+  </div>
+  <div class="metric-card">
+    <div class="num">2h45</div>
+    <div class="lbl">Duração total</div>
+  </div>
+  <div class="metric-card">
+    <div class="num">655</div>
+    <div class="lbl">Leads avisados</div>
+  </div>
+  <div class="metric-card">
+    <div class="num">R$ 50k</div>
+    <div class="lbl">Meta (2 vendas R$25k)</div>
+  </div>
+</div>
+
+<section id="contexto" class="section">
+<h2>01. Contexto</h2>
+<p>A <strong>Simple</strong> (Daniel Souza, CEO, sócio do Luiz Filho — lançador do Pablo Marçal) está em fase de recuperação de base e levantamento de caixa. Existem <strong>~600 leads MQL</strong> acumulados do comercial (alguns passaram por call com closer, outros não), com <strong>55 pessoas no grupo de WhatsApp</strong>.</p>
+<p>O objetivo é puxar esse pipeline parado para uma <strong>Sala Secreta ao vivo</strong> (segunda 01/06, 20h, Google Meet) com expectativa de 20-30 participantes, entregar conteúdo aprofundado + tira-dúvidas e converter pelo menos <strong>2 consultorias de R$25k = R$50k</strong>.</p>
+<p>A estratégia <strong>não é</strong> fechar venda dentro do evento (ticket alto não suporta close em tela curta). É <strong>abrir aplicação para call comercial</strong> durante a sala — pitch consultivo que apresenta a oferta principal sem revelar o processo completo, gerando aplicações que o closer fecha em call 1:1 depois.</p>
+<p>O próprio mentor (Luiz Filho) recomendou formato de sala próxima da audiência com tira-dúvidas — distinto do CPL clássico.</p>
+</section>
+
+<section id="objetivo" class="section">
+<h2>02. Objetivo de negócio</h2>
+<div class="success-box">
+<div class="label">Meta principal</div>
+<p style="color: var(--text); font-size: 1.15rem; margin: 0;"><strong>R$ 50.000 em caixa em 7-14 dias</strong> (= 2 consultorias de R$25k vendidas via aplicação → call comercial → fechamento)</p>
+</div>
+
+<h3>Meta secundária</h3>
+<p>Reativar a base de 600 MQLs e validar a "Sala Secreta" como funil repetível para próximas rodadas (com mais tempo de preparação).</p>
+
+<h3>Meta de aprendizado</h3>
+<p>Validar o frame "Funil de Lead Dinâmico + SSA" com público real, coletar objeções ao vivo e refinar o pitch consultivo.</p>
+</section>
+
+<section id="icp" class="section">
+<h2>03. ICP do evento</h2>
+
+<div class="big-quote">
+<p><strong>Mentor High Ticket Travado na Aquisição Lucrativa</strong></p>
+<p style="margin-top: 16px; font-size: 1rem; color: var(--text-soft);">Mentor high ticket que fatura R$50k+/mês, já tem processo comercial mínimo, já investe em tráfego, mas o tráfego não fica lucrativo como ele queria — passou pela mão de várias agências/gestores e nenhum resolveu o problema.</p>
+</div>
+
+<div class="warning-box">
+<div class="label">Atenção · ICP recalibrado</div>
+<p style="color: var(--text); margin: 0;">O ICP real da sala é "1 passo atrás" do ICP refinado do BRAND HUB. A maioria dos 600 MQL parados é <strong>Caroline-style</strong> (clube de mentoria high ticket, vendeu pra base quente, base acabou, agora tenta lead frio com sessão estratégica e não converte). Validado na transcrição da call de 18/02/2025.</p>
+</div>
+
+<h3>Características obrigatórias</h3>
+<ul>
+  <li>Já fatura R$50k+/mês</li>
+  <li>Já tem produto/oferta validada</li>
+  <li>Já tem alguma pessoa no comercial (SDR, atendimento, closer ou ele mesmo)</li>
+  <li>Já investe em tráfego pago atualmente (Meta Ads principalmente)</li>
+  <li>Já passou por agência/gestor de tráfego que não resolveu</li>
+</ul>
+
+<h3>O maior erro que esse ICP comete (e não vê como erro)</h3>
+<div class="card-grid cols-2">
+  <div class="card">
+    <h4 style="color: var(--red);">Erro #1</h4>
+    <p style="color: var(--text); font-weight: 600;">Quer que o marketing venda sozinho.</p>
+    <p style="font-size: 0.92rem;">Acha que o lead bom vai agendar e fechar sozinho, sem comercial trabalhar a base. Não existe.</p>
+  </div>
+  <div class="card">
+    <h4 style="color: var(--red);">Erro #2</h4>
+    <p style="color: var(--text); font-weight: 600;">Fala com o ICP errado nas copies.</p>
+    <p style="font-size: 0.92rem;">Comunica com quem está no COMEÇO da jornada (curioso, iniciante), quando deveria falar com quem está ESTAGNADO/quer escalar.</p>
+  </div>
+</div>
+
+<h3>O que acontece quando o erro persiste</h3>
+<ul>
+  <li>Tráfego nunca fica lucrativo de verdade</li>
+  <li>Fala com público errado + não tem comercial estruturado = não vende</li>
+  <li>Investe cada vez mais sem ROI claro</li>
+  <li>Frustra-se com o digital e culpa "o mercado" ou "a agência"</li>
+</ul>
+
+<h3>O que muda quando para de cometer o erro</h3>
+<ul>
+  <li>Fluxo previsível de MQL</li>
+  <li>Comunicação de marketing ajustada (fala com quem compra)</li>
+  <li>Fluxo de vendas ajustado (pré-vendas + call x1 estruturados)</li>
+  <li>Comercial sabe vender e agendar</li>
+</ul>
+
+<h3>O diferencial do Daniel (o que NINGUÉM faz)</h3>
+<ol>
+  <li><strong>Funil de marketing em 3 camadas:</strong> conteúdo de atração (topo) + funil de aquisição de leads (meio) + funil de aplicação (fundo)</li>
+  <li><strong>Ajusta oferta + comercial junto:</strong> galera do digital só olha aquisição, cobra caro, não olha volume nem entrega. Daniel ajuda a pensar como empresário</li>
+  <li><strong>Funil de Quiz como diferencial central:</strong> mecanismo proprietário que qualifica antes de chegar no comercial</li>
+  <li><strong>Auxilia em TUDO da aquisição:</strong> posicionamento, produção de conteúdo, social selling, funil de quiz</li>
+</ol>
+</section>
+
+<section id="mecanismo" class="section">
+<h2>04. Mecanismo Simple — os 4 Pilares + Funil Ampulheta</h2>
+<p class="lead">Versão atual da Simple (30/05/2026) — os pilares do BRAND HUB original foram refeitos.</p>
+
+<div class="pillar-grid">
+  <div class="pillar-item">
+    <div class="num">PILAR 01</div>
+    <h4>Produto / Oferta</h4>
+    <p>O que o quiz qualifica. A oferta precisa ser desenhada com o método — se é genérica, o quiz não tem o que filtrar. Pilar 1 redesenha a oferta pra ser diferenciada e ancorada na dor real do ICP.</p>
+  </div>
+  <div class="pillar-item">
+    <div class="num">PILAR 02</div>
+    <h4>Funil de Quiz</h4>
+    <p>O mecanismo central. Anúncio → quiz diagnóstico (6-12 perguntas) → página de aplicação → call. Reduz custo MQL de R$250 pra R$80-120 e fornece dados estratégicos pra Meta calibrar audiência mesmo com fim de lookalike/interesse.</p>
+  </div>
+  <div class="pillar-item">
+    <div class="num">PILAR 03</div>
+    <h4>Comercial</h4>
+    <p>O que garante que o quiz converta em receita. Pré-vendas (SDR) + call x1 (closer) + scripts + processo + matriz de objeções. Brasileiro tem sales shield alto — quiz reduz porque o lead "se vendeu" antes da call.</p>
+  </div>
+  <div class="pillar-item">
+    <div class="num">PILAR 04</div>
+    <h4>Expansão · Funil Ampulheta</h4>
+    <p>Deixar o negócio mais lucrativo criando novas ofertas pra base de clientes atual. Cliente entra no topo, aperta no meio (consolida resultado), expande na base (upsell, cross-sell, ofertas de continuidade). Maximiza LTV sem precisar de mais lead novo.</p>
+  </div>
+</div>
+</section>
+
+<section id="nome" class="section">
+<h2>05. Nome do método</h2>
+<div class="success-box">
+<div class="label">Definido</div>
+<p style="color: var(--text); font-size: 1.2rem; margin: 0;"><strong>Funil de Lead Dinâmico</strong> (sistema central — Pilar 2) <br>+ <strong>SSA — Sistema Simple de Aquisição</strong> (guarda-chuva dos 4 Pilares)</p>
+</div>
+<p>Sempre que mencionado na sala/slides:</p>
+<ul>
+  <li><strong>Funil de Lead Dinâmico</strong> = o quiz + a estrutura de captura → diagnóstico → agendamento (Pilar 2 protagonista)</li>
+  <li><strong>SSA — Sistema Simple de Aquisição</strong> = todos os 4 Pilares juntos</li>
+  <li><strong>Funil Ampulheta</strong> = nome do princípio dentro do Pilar 4 (Expansão)</li>
+</ul>
+</section>
+
+<section id="promessa" class="section">
+<h2>06. Promessa do evento — Big Promise (Brunson)</h2>
+<div class="big-quote">
+<p>"Nas próximas 2 horas, você vai entender 3 coisas:</p>
+<p>1. <strong>Por que o funil de sessão estratégica não converte mais em 2026</strong> — e por que sua agenda vive lotada de curioso descomprometido (Secret #1)</p>
+<p>2. <strong>Como o Funil de Lead Dinâmico substitui sessão estratégica e qualifica o lead ANTES da call</strong> — Pilar 2 do SSA (Secret #2)</p>
+<p>3. <strong>As 3 alavancas que faltam pro seu negócio escalar pra R$100k+/mês</strong> — oferta irresistível, comercial estruturado e Funil Ampulheta (Secret #3)</p>
+<p style="margin-top: 16px;">Já te aviso pra ficar transparente: <span class="accent">vai ter pitch</span>. Quem ficar até o final entende o sistema completo. Quem quiser implementar com a Simple, aplica pra uma call de diagnóstico — sem compromisso, em 30 min."</p>
+</div>
+
+<div class="highlight-box">
+<div class="label">Por que "vai ter pitch" no início</div>
+<p style="margin: 0;">Decisão do Daniel — anti-manipulation framing (Cole Gordon + Joel Yi). Quebra a objeção "ah, vai vender" antes mesmo dela existir. Reduz desconfiança e cria contrato emocional com a audiência.</p>
+</div>
+</section>
+
+<section id="oferta" class="section">
+<h2>07. Frame da oferta na sala</h2>
+
+<div class="do-dont">
+  <div class="do-dont-card do">
+    <h4>✓ O que apresentar</h4>
+    <ul style="margin-top: 8px;">
+      <li>A consultoria principal da Simple (12 meses, time integrado)</li>
+      <li>Os 4 Pilares + Funil Ampulheta como o sistema</li>
+      <li>Componentes do stack (Roadmap, Protocolo, Quiz, Playbook, etc.)</li>
+      <li>Ancoragem em valor de mercado: stack vale R$250k+ avulso</li>
+    </ul>
+  </div>
+  <div class="do-dont-card dont">
+    <h4>✕ O que NÃO apresentar</h4>
+    <ul style="margin-top: 8px;">
+      <li>NÃO revelar o preço (R$25k) na sala — só na call</li>
+      <li>NÃO revelar o "processo completo" — listar o que tem, não o como</li>
+      <li>NÃO usar escassez fake ("últimas vagas", "só hoje")</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Frame final do pitch</h3>
+<blockquote>
+<p>"Esse stack inteiro vale R$ 250 mil se você for contratar componente por componente em mercado avulso. Você não vai pagar nem 50% disso. Quer saber quanto custa pra você? Aplica pra call de diagnóstico — 30 min, sem compromisso. Se fizer sentido, te mostro a proposta. Se não, sai com o diagnóstico do seu funil de graça."</p>
+</blockquote>
+<p style="font-size: 0.9rem; color: var(--text-mute);">Inspirado em Russell Brunson (anchored value 10x) adaptado ao modelo de aplicação Joel Yi style (sales farming).</p>
+</section>
+
+<section id="tensao" class="section">
+<h2>08. 4 Pontos de tensão a marteladar na sala</h2>
+<p>Ganchos que viram dobras dos blocos de Secret/Quebra de Crença:</p>
+
+<div class="card-grid cols-2">
+  <div class="card">
+    <h4 style="color: var(--accent);">Ponto 1 — Sales shield no teto</h4>
+    <p>"Brasileiro odeia vendedor. Ninguém gosta de fazer call. Quiz reduz isso porque o lead se vendeu antes de você abrir a boca."</p>
+  </div>
+  <div class="card">
+    <h4 style="color: var(--accent);">Ponto 2 — Oferta padrão perde força</h4>
+    <p>"Todo mundo no seu nicho vende a mesma oferta. Você compete por preço. Com quiz, você cria oferta inovadora ancorada na dor específica que o quiz revela. Você sai do mar vermelho."</p>
+  </div>
+  <div class="card">
+    <h4 style="color: var(--accent);">Ponto 3 — Custo do tráfego só sobe</h4>
+    <p>"CPM, CPL, CPA — tudo crescendo. Com quiz, você gera mais MQL mais barato (R$80-120 vs R$250 do mercado), porque o quiz filtra. Comercial trabalha menos lead ruim — escala sem inflar mídia."</p>
+  </div>
+  <div class="card">
+    <h4 style="color: var(--accent);">Ponto 4 — Lookalike morreu</h4>
+    <p>"Meta tá com pixel fraco, iOS quebrou tracking, lookalike não funciona. Com quiz, você coleta dados estratégicos que viram input pra Meta calibrar audiência. Comercial chega preparado — agendamento e fechamento sobem."</p>
+  </div>
+</div>
+</section>
+
+<section id="voz" class="section">
+<h2>09. Voz e tom da sala</h2>
+<h3>Voz Daniel (do BRAND HUB)</h3>
+<ul>
+  <li><strong>Direto-informal</strong> · técnico-acessível · provocativo-generoso</li>
+  <li><strong>Vocabulário-assinatura:</strong> "qual que é o grande lance", "na veia", "otimizando no escuro", "mina de ouro", "calibrar", "irmão/mano/cara"</li>
+  <li><strong>Tom:</strong> conversa, não palestra</li>
+  <li><strong>Permissão de palavrão controlado</strong> ("cagada", "merda" em contexto de erro evitável)</li>
+  <li><strong>NUNCA:</strong> linguagem de guru, escassez fake, promessa absurda, ataque nominal a concorrente</li>
+</ul>
+
+<div class="do-dont">
+  <div class="do-dont-card dont">
+    <h4>✕ Palavras proibidas</h4>
+    <p style="font-size: 0.92rem; color: var(--text-soft);">sob medida · impulsionar · método científico · braço extra · expertise · potencializar · alavancar · desbloquear · ROI (usar ROAS/CAC) · resultados reais · estratégia digital · presença digital · solução completa · time dedicado · máquina de aquisição · escalar (sozinho)</p>
+  </div>
+  <div class="do-dont-card do">
+    <h4>✓ Palavras obrigatórias</h4>
+    <p style="font-size: 0.92rem; color: var(--text-soft);">otimizando no escuro · matéria-prima certa · jogo de comercial · mina de ouro · risco seguro · qual que é o grande lance · na veia · calibrar · pipeline aproveitável · implementação</p>
+  </div>
+</div>
+</section>
+
+<section id="frameworks" class="section">
+<h2>10. Frameworks de copy que vão na sala</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Framework</th><th>Quando usar</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Filtro-na-Porta</strong></td><td>Abertura (quem é/não é)</td></tr>
+    <tr><td><strong>Espelho-Reframe</strong></td><td>Em cada Secret (3 vezes na sala)</td></tr>
+    <tr><td><strong>Conta-na-Hora</strong></td><td>Secret #1 — Daniel abre Meta Ads ao vivo</td></tr>
+    <tr><td><strong>Anti-Guru</strong></td><td>Secret #3 — anti-agência sem nominar</td></tr>
+    <tr><td><strong>Eu sou seu cliente ideal</strong></td><td>Secret #2 — Daniel se cola no ICP</td></tr>
+    <tr><td><strong>Números-Bomba</strong></td><td>Ao longo de toda a sala</td></tr>
+    <tr><td><strong>Stack visual cumulativo</strong></td><td>Bloco 6 (pitch)</td></tr>
+    <tr><td><strong>CTA-Condicional</strong></td><td>Fechamento ("se fizer sentido, avança; se não, sai com meu melhor")</td></tr>
+    <tr><td><strong>Hot Seat ao vivo</strong></td><td>Bloco final (massacro de dúvidas, formato Hormozi Hotline)</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="estrutura" class="section">
+<h2>11. Estrutura final do roteiro (2h45)</h2>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-time">20h00–20h15</div>
+    <div class="timeline-content">
+      <h4>BLOCO 1 · Abertura + transparência do pitch</h4>
+      <p>Acolhimento · Filtro-na-porta · Big Idea v2 · Big Promise · "VAI TER PITCH" frame</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">20h15–20h45</div>
+    <div class="timeline-content">
+      <h4>BLOCO 2 · SECRET #1 — Sessão estratégica é furada</h4>
+      <p>4 motivos: lead caro / descomprometido / sales shield alto / sem alinhamento comercial · Conta-na-hora real</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">20h45–21h15</div>
+    <div class="timeline-content">
+      <h4>BLOCO 3 · SECRET #2 — Quiz (Pilar 2 do SSA)</h4>
+      <p>Quiz substitui sessão · reduz sales shield · coleta dados estratégicos · substitui lookalike · oferta inovadora · Origin story do Daniel (foi pros EUA, achou o método)</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">21h15–21h45</div>
+    <div class="timeline-content">
+      <h4>BLOCO 4 · SECRET #3 — Os 3 Pilares que faltam</h4>
+      <p>Pilar 1 (Oferta Irresistível) + Pilar 3 (Comercial Estruturado) + Pilar 4 (Funil Ampulheta). Por que quiz sozinho não escala.</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">21h45–22h00</div>
+    <div class="timeline-content">
+      <h4>BLOCO 5 · Apresentação da consultoria</h4>
+      <p>O que o programa Simple entrega (sem revelar processo, sem revelar preço) · Ancoragem invertida</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">22h00–22h15</div>
+    <div class="timeline-content">
+      <h4>BLOCO 6 · Pitch + Stack R$250k + CTA aplicação</h4>
+      <p>Stack visual cumulativo · reframe "aplicação = diagnóstico gratuito" · escassez real (2 vagas) · 3 objeções pré-respondidas · 4 diferenciais vs mercado</p>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">22h15–22h45</div>
+    <div class="timeline-content">
+      <h4>BLOCO 7 · HOT SEAT · Massacro de dúvidas</h4>
+      <p>Daniel responde 5-8 perguntas ao vivo · cada diagnóstico fecha com "isso a gente roda na consultoria — aplica"</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="riscos" class="section">
+<h2>12. Riscos e mitigações</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Risco</th><th>Mitigação</th></tr></thead>
+  <tbody>
+    <tr><td>Compareceram &lt; 15 pessoas (pitch perde energia)</td><td>Frame "sala íntima, ainda melhor pra você" + foco em qualidade &gt; quantidade do hot seat</td></tr>
+    <tr><td>Pitch revela preço por acidente</td><td>Daniel ensaia frame "isso a gente vê na call" 3-5 vezes antes da sala</td></tr>
+    <tr><td>Hot seat vira terapia coletiva (sem aplicação)</td><td>Cada diagnóstico termina com "isso é o que a gente roda na consultoria. Aplica pra continuarmos."</td></tr>
+    <tr><td>Audiência cansa antes do pitch (2h45 é longo)</td><td>Trial closes a cada 10-15 min + intervalo de 3 min entre bloco 4 e 5</td></tr>
+    <tr><td>Pitch parece manipulação</td><td>Reforço múltiplo da CTA-Condicional ("se não fizer sentido, sai com meu melhor")</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<hr>
+
+<h1 style="margin-top: 64px;">Big Idea — A frase-mãe do evento</h1>
+
+<section id="bigidea-oficial" class="section">
+<h2>A Big Idea oficial (v2)</h2>
+<div class="big-quote">
+<p>"O funil de <span class="accent">sessão estratégica</span> era ouro em 2022.<br>Em 2026, ele queima sua agenda com <span class="accent">curioso descomprometido</span>.<br><br>A próxima onda do digital pra high ticket é o<br><span class="accent" style="font-size: 1.2em;">Funil de Lead Dinâmico.</span></p>
+</div>
+
+<div class="warning-box">
+<div class="label">Versão atualizada · ICP recalibrado</div>
+<p style="margin: 0;">Esta v2 substituiu a v1 (que falava de "tráfego não dá ROI") quando o ICP foi recalibrado pro Caroline-style. A v2 ataca o método que o público <strong>está usando agora</strong> (sessão estratégica) — não o problema downstream.</p>
+</div>
+</section>
+
+<section id="bigidea-usos" class="section">
+<h2>Versões de uso</h2>
+
+<h3>Hook de abertura (15 segundos · primeira fala)</h3>
+<blockquote>
+<p>"Quem tá aqui já tentou vender high ticket pela internet. Boa parte de vocês tá rodando funil de sessão estratégica — anúncio chama pra call, call de 30 min, fechamento na hora. Vou te falar uma coisa que ninguém tá te falando: esse modelo era ouro em 2018-2022, com o Henrique Marinho. Em 2026, ele tá queimando sua agenda com curioso descomprometido. Existe um terceiro caminho — e ele é a próxima onda do digital pra high ticket."</p>
+</blockquote>
+
+<h3>Slide-âncora (slide 4 do bloco de abertura)</h3>
+<div class="card">
+<p style="text-align: center; font-size: 1.3rem; line-height: 1.5; color: var(--text); margin: 0;"><strong>"O funil de sessão estratégica era ouro em 2022.<br>Em 2026, ele queima sua agenda com curioso.<br>A próxima onda do digital pra high ticket é o<br><span style="color: var(--accent);">Funil de Lead Dinâmico</span>."</strong></p>
+</div>
+
+<h3>Encerramento do pitch (callback)</h3>
+<blockquote>
+<p>"A primeira fala dessa sala foi: o funil de sessão estratégica era ouro em 2022, em 2026 queima sua agenda. Agora vocês entenderam por quê — e viram que existe uma alternativa que junta quiz + comercial + Funil Ampulheta. Isso é o SSA. Se cê quer rodar isso no teu negócio com a gente, aplica pra call."</p>
+</blockquote>
+
+<h3>Versão para Instagram (copy de divulgação extra)</h3>
+<blockquote>
+<p><strong>"O funil de sessão estratégica tá morto. Sala secreta hoje 20h pra te mostrar o que veio depois."</strong></p>
+</blockquote>
+</section>
+
+<section id="bigidea-justi" class="section">
+<h2>Por que essa Big Idea funciona pra Caroline-style</h2>
+
+<ol>
+  <li><strong>Eles JÁ estão usando funil de sessão estratégica (ou prestes a usar).</strong> A própria Caroline na transcrição: "a gente começou pelos contatos quentes... essa base vai ficando mais escassa". Ela vai EM SEGUIDA tentar sessão estratégica.</li>
+  <li><strong>Nomeia o problema com palavra que eles usam.</strong> "Sessão estratégica" é o jargão padrão. Cria efeito "ué, eu faço isso" — atenção travada.</li>
+  <li><strong>Apresenta o Funil de Lead Dinâmico como antídoto específico</strong>, não solução vaga.</li>
+  <li><strong>Não acusa o público — acusa o MERCADO de não ter evoluído.</strong> "Era ouro em 2022" = você não foi burro. "Em 2026 não funciona mais" = o jogo mudou. Você não é o problema, o método é.</li>
+  <li><strong>Antecipa a curiosidade dos 3 Secrets.</strong> POR QUE não funciona? → Secret #1 · O QUE é o método? → Secret #2 · COMO o resto se encaixa? → Secret #3</li>
+</ol>
+
+<h3>Ângulos descartados</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Ângulo testado</th><th>Por que descartado</th></tr></thead>
+  <tbody>
+    <tr><td>"High ticket é jogo de comercial"</td><td>Tese central, mas abstrata demais pra hook de sala. Funciona como filosofia.</td></tr>
+    <tr><td>"Quiz é o futuro do tráfego pago"</td><td>Vende ferramenta no hook (erro). Audiência compra resultado.</td></tr>
+    <tr><td>"Pare de pagar agência"</td><td>Anti-guru demais, ofensivo. Quebra a voz Daniel.</td></tr>
+    <tr><td>"Como escalar de R$50k pra R$300k em 90 dias"</td><td>Promessa absurda. Quebra regra BRAND HUB.</td></tr>
+    <tr><td>"O segredo dos top 1%"</td><td>Hype/guru, proibido.</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="bigidea-estrutura" class="section">
+<h2>Como a Big Idea estrutura o roteiro inteiro</h2>
+<div class="card" style="background: var(--bg-soft);">
+<pre style="font-family: var(--font-mono); color: var(--text-soft); font-size: 0.85rem; line-height: 1.6; overflow-x: auto; margin: 0;">┌─────────────────────────────────────────────────────────────────┐
+│  BIG IDEA                                                       │
+│  "Sessão estratégica era ouro em 2022. Em 2026 queima sua       │
+│   agenda. A próxima onda é o Funil de Lead Dinâmico."           │
+└─────────────────────────────────────────────────────────────────┘
+            │
+            ├─── SECRET #1 (Veículo): POR QUE sessão estratégica é furada
+            │    └── 4 motivos: caro / descomprometido / sales shield / sem alinhamento
+            │
+            ├─── SECRET #2 (Interno): O QUE é o Funil de Lead Dinâmico — Pilar 2
+            │    └── Reduz sales shield / coleta dados / substitui lookalike / oferta inovadora
+            │
+            ├─── SECRET #3 (Externo): O QUE FALTA pra escalar pra R$100k+
+            │    └── Pilar 1 (Oferta) + Pilar 3 (Comercial) + Pilar 4 (Ampulheta)
+            │
+            └─── PITCH: o sistema completo é o SSA
+                 └── CTA: aplique pra ver se faz sentido
+                 └── Stack ancorado em R$250k+
+                 └── Escassez real (2 vagas)
+</pre>
+</div>
+</section>
+
+<hr>
+
+<h1 style="margin-top: 64px;">Objetivos &amp; KPIs</h1>
+
+<section id="meta" class="section">
+<h2>Meta principal</h2>
+<div class="success-box">
+<div class="label">Meta de receita</div>
+<p style="color: var(--text); font-size: 1.4rem; margin: 0;"><strong>R$ 50.000 em caixa em 7-14 dias</strong></p>
+<p style="margin-top: 8px; color: var(--text-soft);">= 2 consultorias de R$25k vendidas via aplicação → call comercial → fechamento</p>
+</div>
+</section>
+
+<section id="funil" class="section">
+<h2>Funil esperado (3 cenários)</h2>
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Etapa</th><th>Base</th><th>Conservador</th><th>Mediano (META)</th><th>Otimista</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Leads avisados</td><td>655</td><td>655</td><td>655</td><td>655</td></tr>
+    <tr><td>Confirmaram presença</td><td>—</td><td>80 (12%)</td><td>130 (20%)</td><td>200 (30%)</td></tr>
+    <tr><td>Compareceram ao vivo</td><td>—</td><td>25 (4%)</td><td>35 (5%)</td><td>50 (8%)</td></tr>
+    <tr><td>Aplicações enviadas</td><td>—</td><td>4 (15%)</td><td>7 (20%)</td><td>12 (25%)</td></tr>
+    <tr><td>Calls comerciais agendadas</td><td>—</td><td>3 (70%)</td><td>5 (75%)</td><td>10 (85%)</td></tr>
+    <tr><td>Calls realizadas (no-show ~20%)</td><td>—</td><td>2</td><td>4</td><td>8</td></tr>
+    <tr><td><strong>Vendas R$25k fechadas</strong></td><td>—</td><td><strong>1</strong></td><td><strong>2</strong></td><td><strong>3</strong></td></tr>
+    <tr><td><strong>Receita</strong></td><td>—</td><td><strong>R$ 25k</strong></td><td><strong>R$ 50k</strong></td><td><strong>R$ 75k</strong></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Benchmarks usados</h3>
+<ul>
+  <li>Show-up rate base aquecida: 30-60% (Brunson)</li>
+  <li>Aplicação rate sala high ticket: 11-20% (Baldan público)</li>
+  <li>Aplicação rate público pago/qualificado: 35% (Victor Damásio)</li>
+  <li>Call show-up de aplicação: 70-90%</li>
+  <li>Aplicação → fechamento R$25k: 15-25%</li>
+</ul>
+</section>
+
+<section id="kpi-vivo" class="section">
+<h2>KPIs em tempo real durante o evento</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>KPI</th><th>Como medir</th><th>Meta mínima</th></tr></thead>
+  <tbody>
+    <tr><td>Comparecimento ao vivo</td><td>Contagem no Google Meet</td><td>20 pessoas</td></tr>
+    <tr><td>Retenção em 1h</td><td>Quantas ainda estão</td><td>70%</td></tr>
+    <tr><td>Retenção até o pitch (h2)</td><td>Quantas no início do bloco 6</td><td>50%</td></tr>
+    <tr><td>Trial closes positivos no chat</td><td>Contar "1", "EU", "JOGO", "FEITO"</td><td>60% respondendo</td></tr>
+    <tr><td>Aplicações abertas durante pitch</td><td>Timestamp da 1ª aplicação</td><td>1ª em até 10 min do pitch</td></tr>
+    <tr><td>Hot seat — perguntas reais</td><td>Contar perguntas levantadas</td><td>Mínimo 5</td></tr>
+    <tr><td>Aplicações totais (durante + 2h pós)</td><td>Painel do Typeform/form</td><td>5 aplicações</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="kpi-pos" class="section">
+<h2>KPIs pós-evento (D+1 a D+14)</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>KPI</th><th>Janela</th><th>Meta</th></tr></thead>
+  <tbody>
+    <tr><td>Aplicações 24h pós-sala</td><td>D+1</td><td>+50% das aplicações da sala</td></tr>
+    <tr><td>Calls comerciais agendadas</td><td>D+1 a D+3</td><td>80% das aplicações</td></tr>
+    <tr><td>Calls realizadas (no-show &lt;20%)</td><td>D+1 a D+7</td><td>80% das agendadas</td></tr>
+    <tr><td>Propostas enviadas</td><td>D+1 a D+7</td><td>60% das calls</td></tr>
+    <tr><td>Vendas fechadas</td><td>D+1 a D+14</td><td>25-30% das propostas</td></tr>
+    <tr><td><strong>Receita total atribuível</strong></td><td>D+14</td><td><strong>R$ 50k (meta)</strong></td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="cenarios" class="section">
+<h2>Cenários "e se" — gatilhos de decisão</h2>
+
+<div class="card">
+<h4 style="color: var(--yellow);">Se comparecer &lt; 15 pessoas</h4>
+<p><strong>Frame:</strong> "Sala íntima — ótimo, vamos ter conversa de qualidade. Quem tá aqui agora vai ter atenção individual."</p>
+<p><strong>Ajuste:</strong> Aumentar tempo do hot seat (até 45 min). Cada pessoa é importante.</p>
+<p><strong>NÃO:</strong> Cancelar ou diminuir o pitch. Even 1 venda salva o ROI.</p>
+</div>
+
+<div class="card">
+<h4 style="color: var(--yellow);">Se ninguém aplicar nos primeiros 10 min do pitch</h4>
+<p><strong>Frame:</strong> "Quem tá pensando 'isso é exatamente o que eu preciso mas tô com dúvida X' — manda a dúvida no chat."</p>
+<p><strong>Ajuste:</strong> Antecipar hot seat. Resolver objeções em massa.</p>
+</div>
+
+<div class="card">
+<h4 style="color: var(--yellow);">Se chat entrar em "vai vender, né?"</h4>
+<p><strong>Frame:</strong> "Eu disse no começo: vai ter pitch. Cê tá aqui porque escolheu ficar. Quem não quer ouvir, sai agora — sem ressentimento, com 3 frameworks de graça."</p>
+</div>
+
+<div class="card">
+<h4 style="color: var(--yellow);">Se Google Meet cair</h4>
+<p><strong>Backup:</strong> Link de Zoom de emergência pré-preparado. Comunicar via grupo de WhatsApp.</p>
+<p><strong>Frame:</strong> "Tá vivendo o que eu falo na consultoria — sistema sem redundância. Vamos pro Plano B."</p>
+</div>
+
+<div class="card">
+<h4 style="color: var(--yellow);">Se ultrapassar 2h45 (cansaço da audiência)</h4>
+<p><strong>Ajuste:</strong> Cortar 1-2 dos hot seats. Manter o pitch e o CTA final intactos.</p>
+</div>
+</section>
+
+<section id="sucesso" class="section">
+<h2>Definição de "sucesso" do evento</h2>
+<div class="card-grid cols-2">
+  <div class="card" style="border-left: 4px solid #FFD700;">
+    <h4 style="color: #FFD700;">🥇 Sucesso total</h4>
+    <p>2+ vendas R$25k + 20+ pessoas presentes + 5+ aplicações de qualidade</p>
+  </div>
+  <div class="card" style="border-left: 4px solid #C0C0C0;">
+    <h4 style="color: #C0C0C0;">🥈 Sucesso bom</h4>
+    <p>1 venda R$25k + 15+ pessoas presentes + 3+ aplicações</p>
+  </div>
+  <div class="card" style="border-left: 4px solid #CD7F32;">
+    <h4 style="color: #CD7F32;">🥉 Sucesso de aprendizado</h4>
+    <p>0 vendas mas dados claros sobre objeção dominante + pipeline para fechar nos 30 dias</p>
+  </div>
+  <div class="card" style="border-left: 4px solid var(--red);">
+    <h4 style="color: var(--red);">❌ Falha</h4>
+    <p>0 vendas + 0 aplicações + 0 aprendizado claro (improvável dado o setup)</p>
+  </div>
+</div>
+<p style="margin-top: 24px; color: var(--text-soft);"><strong>Observação:</strong> mesmo no nível 🥉, o evento gera ROI indireto (lista reativada, conteúdo gravado, aprendizado).</p>
+</section>
+
+<hr>
+
+<div style="margin-top: 64px; padding: 32px; background: var(--bg-card); border-radius: 12px; text-align: center;">
+  <p style="font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-mute); margin: 0;">Briefing fechado em 30/05/2026</p>
+  <p style="margin-top: 12px; color: var(--text-soft);">Big Idea aprovada · Estrutura travada · KPIs realistas</p>
+  <p style="margin-top: 8px; color: var(--text-mute); font-size: 0.85rem;">Próxima fase: Roteiro completo (minuto a minuto)</p>
+</div>
+
+</main>
+</div>
+
+<script>
+const sections = document.querySelectorAll('section.section');
+const navLinks = document.querySelectorAll('.nav a');
+
+function setActive() {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) current = section.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+}
+
+window.addEventListener('scroll', setActive);
+setActive();
+
+navLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      window.scrollTo({ top: target.offsetTop - 24, behavior: 'smooth' });
+      document.querySelector('.sidebar').classList.remove('open');
+    }
+  });
+});
+</script>
+
+
+
+</body></html>
