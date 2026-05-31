@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesquisa — Sala Secreta Simple</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0E2E;
+  --bg-soft: #131A4D;
+  --bg-card: #1A2156;
+  --bg-elev: #232B6B;
+  --text: #F5F5F5;
+  --text-soft: #B0BCEA;
+  --text-mute: #8090C0;
+  --accent: #4A7CFF;
+  --accent-light: #6B96FF;
+  --accent-soft: #8BA9FF;
+  --line: #2A3170;
+  --green: #2A9D8F;
+  --red: #E76F51;
+  --font-sans: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Menlo', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+/* Layout */
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  position: sticky; top: 0; left: 0;
+  height: 100vh;
+  background: var(--bg-soft);
+  border-right: 1px solid var(--line);
+  padding: 32px 24px;
+  overflow-y: auto;
+}
+.brand {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;
+  color: var(--text);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.brand .dot { color: var(--accent); }
+.brand-sub {
+  font-size: 0.75rem;
+  color: var(--text-mute);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+.nav-group { margin-bottom: 28px; }
+.nav-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.nav a {
+  display: block;
+  color: var(--text-soft);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  margin-bottom: 2px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+.nav a:hover { background: var(--bg-card); color: var(--text); border-left-color: var(--accent); }
+.nav a.active { background: var(--bg-card); color: var(--accent-light); border-left-color: var(--accent); }
+.nav a .pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--bg-elev);
+  color: var(--text-mute);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+/* Main */
+.main { padding: 64px 80px; max-width: 1100px; }
+
+/* Tipografia */
+h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin-top: 56px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-top: 36px;
+  margin-bottom: 14px;
+  color: var(--accent-light);
+}
+h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+p { font-size: 1rem; color: var(--text-soft); margin-bottom: 14px; max-width: 80ch; }
+p.lead { font-size: 1.15rem; color: var(--text); line-height: 1.6; }
+strong { color: var(--text); font-weight: 600; }
+em { color: var(--accent-light); font-style: normal; font-weight: 500; }
+code { font-family: var(--font-mono); font-size: 0.88em; background: var(--bg-card); padding: 2px 6px; border-radius: 4px; color: var(--accent-soft); }
+hr { border: none; border-top: 1px solid var(--line); margin: 48px 0; }
+blockquote {
+  border-left: 3px solid var(--accent);
+  background: var(--bg-card);
+  padding: 16px 22px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+}
+blockquote p { color: var(--text); margin: 0; }
+blockquote p + p { margin-top: 10px; }
+
+/* Lists */
+ul, ol { margin: 14px 0 18px 0; padding-left: 24px; color: var(--text-soft); }
+ul li, ol li { margin-bottom: 6px; font-size: 1rem; }
+ul li::marker { color: var(--accent); }
+ol li::marker { color: var(--accent); font-weight: 600; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin: 24px 0; border-radius: 8px; border: 1px solid var(--line); }
+table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+th {
+  background: var(--bg-elev);
+  color: var(--text);
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-soft);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-soft); }
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 28px;
+  margin: 20px 0;
+}
+.card-grid { display: grid; gap: 16px; margin: 20px 0; }
+.card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+}
+.metric-card .num {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.metric-card .lbl {
+  font-size: 0.85rem;
+  color: var(--text-mute);
+  margin-top: 8px;
+  letter-spacing: 0.05em;
+}
+
+/* Eyebrow / tag */
+.eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(74, 124, 255, 0.1);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Section anchor */
+.section { padding-top: 24px; margin-top: -24px; }
+
+/* Player chips */
+.player-chip {
+  display: inline-block;
+  background: var(--bg-elev);
+  color: var(--text-soft);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin: 2px;
+}
+
+/* Highlight box */
+.highlight-box {
+  background: linear-gradient(135deg, rgba(74,124,255,0.12) 0%, rgba(74,124,255,0.04) 100%);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  border-radius: 0 8px 8px 0;
+  margin: 24px 0;
+}
+.highlight-box .label {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Top bar mobile */
+.topbar { display: none; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: fixed; top: 0; left: -280px; z-index: 100; transition: left 0.3s; width: 280px; }
+  .sidebar.open { left: 0; }
+  .topbar { display: flex; padding: 16px; background: var(--bg-soft); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; align-items: center; gap: 12px; }
+  .topbar button { background: var(--bg-card); border: 1px solid var(--line); color: var(--text); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-family: var(--font-sans); }
+  .main { padding: 32px 24px; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  .card-grid.cols-2, .card-grid.cols-3, .card-grid.cols-4 { grid-template-columns: 1fr; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg-elev); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button onclick="document.querySelector('.sidebar').classList.toggle('open')">☰ Menu</button>
+  <span style="color: var(--text);">Pesquisa — Sala Secreta</span>
+</div>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="brand">SIMPLE<span class="dot">.</span></div>
+  <div class="brand-sub">Pesquisa de Mercado</div>
+
+  <div class="nav-group">
+    <div class="nav-title">Visão Geral</div>
+    <nav class="nav">
+      <a href="#contexto"><span class="pill">00</span>Contexto da pesquisa</a>
+      <a href="#players"><span class="pill">01</span>Os 8 players</a>
+      <a href="#padroes"><span class="pill">02</span>5 padrões dominantes</a>
+      <a href="#insights"><span class="pill">03</span>Top 10 insights</a>
+      <a href="#recomendacoes"><span class="pill">04</span>7 recomendações</a>
+    </nav>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-title">Tabela Comparativa</div>
+    <nav class="nav">
+      <a href="#tab-workshop"><span class="pill">P1</span>Estrutura workshop</a>
+      <a href="#tab-roteiro"><span class="pill">P2</span>Estrutura roteiro</a>
+      <a href="#tab-pitch"><span class="pill">P3</span>Estrutura pitch</a>
+      <a href="#tab-oferta"><span class="pill">P4</span>Estrutura oferta</a>
+      <a href="#tab-timing"><span class="pill">P5</span>Timing pitch</a>
+      <a href="#tab-slides"><span class="pill">P6</span>Apresentação</a>
+      <a href="#tab-conv"><span class="pill">P7</span>Conversão</a>
+    </nav>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-title">Template Universal</div>
+    <nav class="nav">
+      <a href="#template"><span class="pill">→</span>Estrutura recomendada Simple</a>
+    </nav>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-title">Fichas dos Players</div>
+    <nav class="nav">
+      <a href="#joel"><span class="pill">01</span>Joel Yi</a>
+      <a href="#cole"><span class="pill">02</span>Cole Gordon (FSS)</a>
+      <a href="#erico"><span class="pill">03</span>Erico Rocha</a>
+      <a href="#ferrari"><span class="pill">04</span>Leandro Ferrari</a>
+      <a href="#baldan"><span class="pill">05</span>William Baldan</a>
+      <a href="#victor"><span class="pill">06</span>Victor Damásio</a>
+      <a href="#brunson"><span class="pill">07</span>Russell Brunson</a>
+      <a href="#hormozi"><span class="pill">08</span>Alex Hormozi</a>
+    </nav>
+  </div>
+</aside>
+
+<main class="main">
+
+<div class="eyebrow">Pesquisa de Mercado · 30/05/2026</div>
+<h1>Sala Secreta Simple<br>— Pesquisa dos 8 Players</h1>
+<p class="lead">Pesquisa de mercado para mapear como 8 lançadores high ticket (4 brasileiros + 4 internacionais) rodam workshop pago / sala secreta. Objetivo: extrair padrões aplicáveis à recuperação de 600 MQLs parados com meta de 2 consultorias de R$25k.</p>
+
+<section id="contexto" class="section">
+<h2>Contexto da pesquisa</h2>
+<p>A <strong>Simple</strong> (Daniel Souza, CEO, sócio do Luiz Filho — lança Pablo Marçal) está em fase de recuperação de base e levantamento de caixa. Existem <strong>~600 leads MQL</strong> acumulados do comercial, com <strong>55 pessoas no grupo de WhatsApp</strong>. O objetivo é puxar esse pipeline parado para uma <strong>Sala Secreta ao vivo</strong> (segunda 01/06, 20h, Google Meet) e converter pelo menos <strong>2 consultorias de R$25k = R$50k</strong>.</p>
+<p>A estratégia <strong>não é</strong> fechar venda dentro do evento. É <strong>abrir aplicação para call comercial</strong> — pitch consultivo que apresenta a oferta principal (consultoria de 12 meses) sem revelar o processo completo, gerando aplicações que o closer fecha em call 1:1 depois.</p>
+
+<div class="card-grid cols-3">
+  <div class="metric-card">
+    <div class="num">655</div>
+    <div class="lbl">Leads na base</div>
+  </div>
+  <div class="metric-card">
+    <div class="num">2h45</div>
+    <div class="lbl">Duração do evento</div>
+  </div>
+  <div class="metric-card">
+    <div class="num">R$ 50k</div>
+    <div class="lbl">Meta de receita</div>
+  </div>
+</div>
+</section>
+
+<section id="players" class="section">
+<h2>Os 8 players pesquisados</h2>
+<p>Cruzando 3+ fontes por player (YouTube ao vivo, site/LP, podcast, livros, análises públicas). Onde dado não é público, marcado como estimativa de mercado.</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Player</th><th>Nacionalidade</th><th>Modelo dominante</th><th>Ticket</th><th>Fit com Simple</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Joel Yi</strong></td><td>Internacional</td><td>DM funnel + coaching grupo</td><td>Custom (alto)</td><td>Médio</td></tr>
+    <tr><td><strong>Cole Gordon</strong> (FSS)</td><td>Internacional</td><td>Webinar + aplicação + call</td><td>$5k-$25k</td><td><em>Alto</em></td></tr>
+    <tr><td><strong>Erico Rocha</strong></td><td>Brasileiro</td><td>CPL clássico (3 vídeos)</td><td>~R$6k</td><td>Médio-baixo</td></tr>
+    <tr><td><strong>Leandro Ferrari</strong></td><td>Brasileiro</td><td>Imersão paga 3 dias + minissérie</td><td>R$997-R$60k+</td><td><em>Alto</em></td></tr>
+    <tr><td><strong>William Baldan</strong></td><td>Brasileiro</td><td>Workshop pago 16h</td><td>R$25.994 + Rise</td><td><em>Alto</em></td></tr>
+    <tr><td><strong>Victor Damásio</strong></td><td>Brasileiro</td><td>Imersão 29h em 3 dias</td><td>R$10-997 → R$15k → R$30k+</td><td><em>MAIS ALTO</em></td></tr>
+    <tr><td><strong>Russell Brunson</strong></td><td>Internacional</td><td>Perfect Webinar (60-90min)</td><td>$497-$2.997</td><td><em>Alto</em></td></tr>
+    <tr><td><strong>Alex Hormozi</strong></td><td>Internacional</td><td>Mega-launch 10h livestream</td><td>$29.99-$18k</td><td>Médio-alto</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="padroes" class="section">
+<h2>5 padrões dominantes (consenso ≥6 dos 8 players)</h2>
+
+<div class="highlight-box">
+<div class="label">Padrão #1</div>
+<h3 style="margin-top:0; color: var(--text);">Aplicação &gt; Checkout para ticket acima de ~R$15k</h3>
+<p>Joel Yi, Cole Gordon, Ferrari, Baldan, Victor, Hormozi todos validam que acima de R$15k é aplicação. Brunson é checkout direto, mas ticket &lt;$3k. <strong>R$25k da Simple = território de aplicação ✓</strong></p>
+</div>
+
+<div class="highlight-box">
+<div class="label">Padrão #2</div>
+<h3 style="margin-top:0; color: var(--text);">Pitch nos últimos 15-30% do tempo total</h3>
+<p>Erico ~80-85%, Ferrari ~75%, Baldan ~87-90%, Victor ~70%, Brunson 70-78%, Cole ~70-80%. Único outlier: Hormozi (distribui em 10h). <strong>Para sala de 2h-2h30, pitch entra entre minuto 90-100 (~70-83%)</strong>.</p>
+</div>
+
+<div class="highlight-box">
+<div class="label">Padrão #3</div>
+<h3 style="margin-top:0; color: var(--text);">Mecanismo nomeado é obrigatório (100% dos players)</h3>
+<p>Fórmula de Lançamento (Erico), Corredor Polonês (Ferrari), Lançamento Pago (Baldan), 4 Pilares + Funil Invertido (Victor), ESP (Joel), Belief Ladder 8-Step (Cole), 3 Secrets + Big Domino (Brunson), Value Equation + Grand Slam (Hormozi). <strong>Simple usa: Funil de Lead Dinâmico (Pilar 2) + SSA (sistema completo)</strong>.</p>
+</div>
+
+<div class="highlight-box">
+<div class="label">Padrão #4</div>
+<h3 style="margin-top:0; color: var(--text);">Prova quantificada com números específicos &gt; adjetivos vagos</h3>
+<p>Todos usam números concretos. <strong>Simple já tem: ROAS 31x, CAC R$1.321, R$600k em 3 meses com R$19k, Junior Pires R$500k</strong>.</p>
+</div>
+
+<div class="highlight-box">
+<div class="label">Padrão #5</div>
+<h3 style="margin-top:0; color: var(--text);">Escassez real (cohort, vagas limitadas) supera escassez fake</h3>
+<p>"Últimas vagas!", "Só hoje!", "Garanta agora!" são proibidos pelos players sérios. <strong>"2 vagas reais de consultoria neste mês"</strong> é o tipo certo de escassez para Simple.</p>
+</div>
+</section>
+
+<section id="insights" class="section">
+<h2>Top 10 insights mais valiosos</h2>
+
+<div class="card">
+  <h4>#1 — Hot Seat / Hormozi Hotline é o move mais "stealable"</h4>
+  <p>No final da sala, abrir mic/chat para 2-3 perguntas reais e Daniel diagnosticar ao vivo. <strong>Demonstra capacidade &gt; qualquer slide de prova</strong>.</p>
+</div>
+
+<div class="card">
+  <h4>#2 — Belief Ladder 8-Step do Cole Gordon é o melhor framework para os 600 MQL parados</h4>
+  <p>Pain → Doubt → Cost → Desire → Support → Money → Willingness → Trust. <strong>A sala quebra as primeiras 4; o closer fecha as últimas 4 na call 1:1</strong>.</p>
+</div>
+
+<div class="card">
+  <h4>#3 — 3 Secrets do Brunson é a estrutura narrativa universal</h4>
+  <p>Vehicle (não funciona pro meu nicho) / Internal (não vou conseguir) / External (mercado tá ruim). 3 blocos de 30 min cada.</p>
+</div>
+
+<div class="card">
+  <h4>#4 — Daniel já é o "Cole Gordon brasileiro"</h4>
+  <p>Cole tem Tony Robbins no portfólio. <strong>Daniel tem Pablo Marçal via Luiz Filho</strong>. Esse hook nos primeiros 5 min vale por 30 min de explicação.</p>
+</div>
+
+<div class="card">
+  <h4>#5 — Trial closes 20-30x na sala (Brunson)</h4>
+  <p>Pedir "sim" verbal/chat o tempo todo. Quando o CTA chegar, audiência já disse sim repetidamente. <strong>Fricção colapsa</strong>.</p>
+</div>
+
+<div class="card">
+  <h4>#6 — Stack ancorado em valor de mercado (Hormozi/Brunson)</h4>
+  <p>Cada componente da consultoria com R$ específico. Stack soma <strong>R$250k+</strong> para oferta R$25k. Consultoria parece presente, não custo.</p>
+</div>
+
+<div class="card">
+  <h4>#7 — Modelo de aplicação como "diagnóstico gratuito" (Hormozi reframing)</h4>
+  <p>NÃO chamar de "call de vendas". Chamar de <strong>"30 min de diagnóstico gratuito do seu funil"</strong>. Reduz fricção dramaticamente.</p>
+</div>
+
+<div class="card">
+  <h4>#8 — Filtro-na-porta logo nos primeiros 5 min</h4>
+  <p>"Essa sala é pra empresário R$50-300k/mês. Não é pra quem tá começando." <strong>Quem fica, fica mais engajado</strong>.</p>
+</div>
+
+<div class="card">
+  <h4>#9 — Conta-na-hora com gerenciador real (Daniel + Hormozi)</h4>
+  <p>Abrir Meta Ads Manager ao vivo. Mostrar CAC R$1.321, ROAS 31x. <strong>Tela real &gt; slide de print</strong>.</p>
+</div>
+
+<div class="card">
+  <h4>#10 — Anti-guru categorial sem nominar (BRAND HUB + universal)</h4>
+  <p>"Não é agência genérica. Não é mentoria de grupo de WhatsApp." <strong>NUNCA nominar V4, Wendell Carvalho ou concorrente real</strong>.</p>
+</div>
+</section>
+
+<section id="recomendacoes" class="section">
+<h2>7 recomendações estratégicas (ordem de prioridade)</h2>
+
+<ol>
+  <li><strong>NOMEAR O MECANISMO antes da sala.</strong> Adotado: <em>"Funil de Lead Dinâmico"</em> (sistema central) + <em>SSA — Sistema Simple de Aquisição</em> (guarda-chuva dos 4 pilares).</li>
+  <li><strong>ROTEIRO EM 7 BLOCOS</strong> conforme template universal: Abertura 15min → 3 Secrets 90min → Apresentação 15min → Pitch 15min → Hot Seat 30min = <strong>2h45 total</strong>.</li>
+  <li><strong>META REALISTA:</strong> 1-3 vendas (R$25-75k). Cenário mediano: 2 vendas / R$50k (meta original).</li>
+  <li><strong>APLICAÇÃO COMO "DIAGNÓSTICO GRATUITO"</strong> aumenta aplicações em 30-50%.</li>
+  <li><strong>STACK COM 8-10 ITENS ANCORADOS</strong> totalizando R$250k+ avulso, sem revelar preço final.</li>
+  <li><strong>TRIAL CLOSES 20-30x</strong> ao longo da sala (Brunson padrão).</li>
+  <li><strong>ESCASSEZ REAL E HONESTA:</strong> "2 vagas reais de consultoria neste mês".</li>
+</ol>
+</section>
+
+<hr>
+
+<h1 style="margin-top:64px;">Tabela Comparativa — 7 Pontos × 8 Players</h1>
+<p>Cada um dos 7 pontos do briefing original cruzado contra os 8 players. Para detalhes, ver fichas individuais na lateral.</p>
+
+<section id="tab-workshop" class="section">
+<h2>Ponto 1 — Estrutura do Workshop</h2>
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Player</th><th>Horário/Duração</th><th>Formato entrega</th><th>Formato pitch</th><th>Preço aparente?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Joel Yi</strong></td><td>Cohort semanal · 60-90 min</td><td>Coaching ao vivo + DM funnel</td><td>DM → call 1:1</td><td>SEM preço</td></tr>
+    <tr><td><strong>Cole Gordon</strong></td><td>Webinar 45-90 min</td><td>VSL + webinar + call</td><td>Aplicação → setter → closer</td><td>SEM preço</td></tr>
+    <tr><td><strong>Erico Rocha</strong></td><td>3 CPLs · ~1h total</td><td>Vídeo gravado + slides</td><td>Pitch direto CPL3</td><td>COM preço (~R$6k)</td></tr>
+    <tr><td><strong>Ferrari</strong></td><td>Discovery 30h em 3 dias</td><td>Palco + sócios + minissérie</td><td>Aplicação (sem pitch direto)</td><td>Mentoria SEM</td></tr>
+    <tr><td><strong>Baldan</strong></td><td>16h em 2 dias (sex/sáb 9h30-17h30)</td><td>Workshop ao vivo "aprenda e crie"</td><td>Pitch Rise módulo 7</td><td>Workshop COM (R$25.994); Rise SEM</td></tr>
+    <tr><td><strong>Victor Damásio</strong></td><td>29h em 3 dias (várias edições/ano)</td><td>Palco virtual + palestrantes</td><td>Pitch direto Dia 3</td><td>COM (R$15k); PAM SEM</td></tr>
+    <tr><td><strong>Brunson</strong></td><td>60-90 min (sweet 75)</td><td>Slide deck + trial closes</td><td>Pitch direto + checkout</td><td>SEM (reveal no final)</td></tr>
+    <tr><td><strong>Hormozi</strong></td><td>9,5-10h livestream YouTube</td><td>Slide ultra-rápido + hotline</td><td>Multiple CTAs distribuídos</td><td>COM ($29-$18k)</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="tab-roteiro" class="section">
+<h2>Ponto 2 — Estrutura do Roteiro (dobras)</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Player</th><th>Esqueleto narrativo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Joel Yi</strong></td><td>Hook militar → Problema velocidade → Diagnóstico → Mecanismo ESP → Prova → Cases → 2 caminhos → Gate aplicação</td></tr>
+    <tr><td><strong>Cole Gordon</strong></td><td>Hook autoridade → Story problema → Diagnóstico mercado → Mecanismo (oferta+sistema+closer) → Prova → 3-5 ensinamentos → Solução → CTA</td></tr>
+    <tr><td><strong>Erico Rocha</strong></td><td>CPL1 Oportunidade · CPL2 Transformação · CPL3 Experiência + Oferta. Cada CPL: promessa → reforço → cases → conteúdo → gancho próximo</td></tr>
+    <tr><td><strong>Ferrari</strong></td><td>Dia 1 Diagnóstico · Dia 2 Método · Dia 3 Pitch. Minissérie: 1-3 prova / 4-5 método / 6-7 aplicação</td></tr>
+    <tr><td><strong>Baldan</strong></td><td>7 módulos: Planejamento → Promessas/Criativos → Tráfego → LP → Captação → Conteúdo → <em>Pitch (módulo 7)</em></td></tr>
+    <tr><td><strong>Victor Damásio</strong></td><td>Dia 1 Mindset · Dia 2 Strategy/Products · Dia 3 Positioning &amp; Pitch</td></tr>
+    <tr><td><strong>Brunson</strong></td><td>Intro (Big Promise, Origin) · One Thing + 3 Secrets · Transition · Stack &amp; Close</td></tr>
+    <tr><td><strong>Hormozi</strong></td><td>Abertura monumental → Money Models → Free offer → Headliners → Q&amp;A → Hotline → Bonus stack → Super-upsell → Scarcity</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="tab-pitch" class="section">
+<h2>Ponto 3 — Estrutura do Pitch (gancho → mecanismo → prova → CTA)</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Player</th><th>Mecanismo nomeado</th><th>CTA principal</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Joel Yi</strong></td><td>ESP (Emotional Selling Process) + Hybrid Sales Farming</td><td>"Aplique no DM"</td></tr>
+    <tr><td><strong>Cole Gordon</strong></td><td>Belief Ladder 8-Step (Pain→Doubt→Cost→Desire→Support→Money→Willingness→Trust)</td><td>"Aplique → call com nosso time"</td></tr>
+    <tr><td><strong>Erico Rocha</strong></td><td>Fórmula de Lançamento (Semente→Interno→Externo→Perpétuo)</td><td>"Entre na Fórmula — carrinho fecha em X"</td></tr>
+    <tr><td><strong>Ferrari</strong></td><td>Corredor Polonês</td><td>"Aplique pra Scale"</td></tr>
+    <tr><td><strong>Baldan</strong></td><td>Lançamento Pago</td><td>"Aplique pra Mentoria Rise"</td></tr>
+    <tr><td><strong>Victor Damásio</strong></td><td>4 Pilares + Funil Invertido</td><td>"Inscreva" (R$15k) / "Aplique" (R$30k+)</td></tr>
+    <tr><td><strong>Brunson</strong></td><td>One Thing + 3 Secrets (vehicle/internal/external false beliefs)</td><td>"Clique → escolha pagamento"</td></tr>
+    <tr><td><strong>Hormozi</strong></td><td>Value Equation + Grand Slam Offer</td><td>"Compre bundle por $5998 + bonuses"</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="tab-oferta" class="section">
+<h2>Ponto 4 — Estrutura da Oferta</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Player</th><th>Stack/Bônus</th><th>Garantia</th><th>Escassez</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Joel Yi</strong></td><td>Sessões, comunidade, playbooks, scripts ESP</td><td>30d (curso); custom (high ticket)</td><td>"Limited engagements per month" (real)</td></tr>
+    <tr><td><strong>Cole Gordon</strong></td><td>Skool, rolodex 696 empresas, scripts, role-plays</td><td>Conditional (não público)</td><td>Cohort/wave-based</td></tr>
+    <tr><td><strong>Erico Rocha</strong></td><td>PDF, Imersão, bônus rotativos</td><td><em>30 dias incondicional</em></td><td>Carrinho 1-2x/ano · 5 dias · "esgota em 4h"</td></tr>
+    <tr><td><strong>Ferrari</strong></td><td>4 mentores, Nexum Mastermind, grupos por estágio</td><td>Aplicação substitui</td><td>"só pra 6+ dígitos"</td></tr>
+    <tr><td><strong>Baldan</strong></td><td>Workshop sem replay; Rise 12 mentorias grupo</td><td><em>Reembolso 2 dias pós-evento</em></td><td>Vendas com janela, lotes esgotados</td></tr>
+    <tr><td><strong>Victor Damásio</strong></td><td>PAM: 7 bônus com nomes (Sobral, Albertoni, etc)</td><td>Maestria 100% incondicional</td><td>Lotes 100 vagas</td></tr>
+    <tr><td><strong>Brunson</strong></td><td>5-8 itens · 1-2 "fast action bonuses"</td><td><em>30 dias money-back sempre</em></td><td>Timer 30 min ao vivo + fast action</td></tr>
+    <tr><td><strong>Hormozi</strong></td><td>12 playbooks · ACQ AI ($135k anc) · Workshop ($35k anc)</td><td>Double-your-money historicamente</td><td><em>Hard deadline countdown</em></td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="tab-timing" class="section">
+<h2>Ponto 5 — Timing do Pitch (% do tempo)</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Player</th><th>Início do pitch</th><th>% do tempo total</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Cole Gordon</strong></td><td>Últimos 20-30% do webinar</td><td>~70-80%</td></tr>
+    <tr><td><strong>Erico Rocha</strong></td><td>Metade do CPL3</td><td><em>~80-85%</em></td></tr>
+    <tr><td><strong>Ferrari</strong></td><td>Dia 3 de 3</td><td><em>~75%</em></td></tr>
+    <tr><td><strong>Baldan</strong></td><td>Módulo 7 de 7 · final Dia 2</td><td><em>~87-90%</em></td></tr>
+    <tr><td><strong>Victor Damásio</strong></td><td>Dia 3 de 3</td><td><em>~70%</em></td></tr>
+    <tr><td><strong>Brunson</strong></td><td>Minuto 60-70 de 90</td><td><em>~70-78%</em></td></tr>
+    <tr><td><strong>Hormozi</strong></td><td>CEDO + se REPETE</td><td>Distribuído</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="highlight-box">
+<div class="label">Conclusão para Simple</div>
+<p>Padrão dominante: pitch nos últimos 15-30% do tempo. Para sala de 2h45, pitch entra entre <strong>minuto 105-120</strong> (~70-83% do tempo).</p>
+</div>
+</section>
+
+<section id="tab-slides" class="section">
+<h2>Ponto 6 — Estrutura da Apresentação (slides)</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Player</th><th>Qtd slides estimada</th><th>Ritmo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Cole Gordon</strong></td><td>30-60 slides</td><td>Médio · didático com storytelling</td></tr>
+    <tr><td><strong>Erico Rocha</strong></td><td>30-50 slides no CPL3</td><td>Slide demorado (2-5 min/slide)</td></tr>
+    <tr><td><strong>Ferrari</strong></td><td>100-150 slides em 30h</td><td>Slide demorado em palco; minissérie ritmo documental</td></tr>
+    <tr><td><strong>Baldan</strong></td><td>150-250 slides em 16h</td><td>Rápido no técnico, lento no pitch</td></tr>
+    <tr><td><strong>Victor Damásio</strong></td><td>200-300 slides em 29h</td><td>Demorado nos blocos, rápido no pitch</td></tr>
+    <tr><td><strong>Brunson</strong></td><td>80-150 slides em 90 min</td><td>Médio-rápido nas trial closes, lento no Stack</td></tr>
+    <tr><td><strong>Hormozi</strong></td><td>Centenas (1 slide a cada 5-10s)</td><td><em>MUITO RÁPIDO</em> nos blocos teaching</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section id="tab-conv" class="section">
+<h2>Ponto 7 — Taxa de Conversão (frio vs base aquecida)</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Player</th><th>Frio</th><th>Quente/Base</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Baldan</strong></td><td><em>11-20% na sala (PÚBLICO)</em></td><td>Comparecimento 50-75%</td></tr>
+    <tr><td><strong>Victor Damásio</strong></td><td>—</td><td><em>35% em pitch R$15k</em> (público pagou R$10-997)</td></tr>
+    <tr><td><strong>Brunson</strong></td><td>5-10%</td><td>10-15% (benchmark dele)</td></tr>
+    <tr><td><strong>Hormozi</strong></td><td>$8.80/attendee ($100M Leads · 500k attendees)</td><td>$81M em 1 dia (Money Models 2025)</td></tr>
+    <tr><td><strong>Cole/Joel/Erico/Ferrari</strong></td><td colspan="2">Não divulgam — estimativas de mercado</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<hr>
+
+<section id="template" class="section">
+<h1>Template Universal — Estrutura Recomendada para Simple</h1>
+<p>Síntese aplicada ao contexto: 600 MQL parados, sala digital de 2h45, oferta R$25k via aplicação→call. Documento prescritivo.</p>
+
+<h2>Distribuição de tempo (2h45)</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Bloco</th><th>Tempo</th><th>% do total</th><th>Função</th></tr></thead>
+  <tbody>
+    <tr><td>1. Abertura</td><td>20h00–20h15</td><td>9%</td><td>Filtro-na-porta, Big Idea, "vai ter pitch"</td></tr>
+    <tr><td>2. Secret #1 — Sessão estratégica é furada</td><td>20h15–20h45</td><td>18%</td><td>4 motivos · Conta-na-hora</td></tr>
+    <tr><td>3. Secret #2 — Quiz (Pilar 2)</td><td>20h45–21h15</td><td>18%</td><td>Origin story · 4 motivos · Demo funil</td></tr>
+    <tr><td>4. Secret #3 — 3 Pilares que faltam</td><td>21h15–21h45</td><td>18%</td><td>Pilar 1 (Oferta) · Pilar 3 (Comercial) · Pilar 4 (Ampulheta)</td></tr>
+    <tr><td>5. Apresentação consultoria</td><td>21h45–22h00</td><td>9%</td><td>O que entrega · sem processo · sem preço</td></tr>
+    <tr><td>6. Pitch + Stack + CTA</td><td>22h00–22h15</td><td>9%</td><td>Stack R$250k+ · aplicação como diagnóstico</td></tr>
+    <tr><td>7. Hot Seat / Massacro de dúvidas</td><td>22h15–22h45</td><td>18%</td><td>5-8 perguntas reais · Daniel diagnostica ao vivo</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Checklist do que não pode faltar</h2>
+<ul>
+  <li>Filtro-na-porta logo no início (quem é/quem não é)</li>
+  <li>Mecanismo nomeado (Funil de Lead Dinâmico + SSA)</li>
+  <li>3 crenças a quebrar explícitas (3 Secrets)</li>
+  <li>Conta-na-hora real com gerenciador aberto</li>
+  <li>Pelo menos 1 case com nome+número (Junior Pires R$500k)</li>
+  <li>Anti-guru categorial sem nominar concorrente</li>
+  <li>Prova institucional Pablo Marçal / Luiz Filho</li>
+  <li>Stack visual cumulativo ancorado em R$ (atingindo R$250k+)</li>
+  <li>Trial closes 20-30x</li>
+  <li>Hot seat 2-3 perguntas ao vivo (estendido para 30 min — massacro)</li>
+  <li>Escassez real ("2 vagas neste mês") sem ser fake</li>
+  <li>CTA-Condicional ("se fizer sentido, avança; se não, sai com meu melhor")</li>
+  <li>Aplicação como diagnóstico, não como venda</li>
+</ul>
+
+<h2>Metas numéricas realistas</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Métrica</th><th>Piso (conservador)</th><th>Teto (otimista)</th></tr></thead>
+  <tbody>
+    <tr><td>Total presente ao vivo (de 655 avisados)</td><td>20-25</td><td>30-40</td></tr>
+    <tr><td>Aplicações enviadas</td><td>4 (15% dos presentes)</td><td>12 (25%)</td></tr>
+    <tr><td>Calls comerciais agendadas</td><td>3 (70%)</td><td>10 (85%)</td></tr>
+    <tr><td>Vendas R$25k fechadas</td><td><em>1</em></td><td><em>3</em></td></tr>
+    <tr><td>Receita</td><td>R$ 25k</td><td>R$ 75k</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<hr>
+
+<h1 style="margin-top:64px;">Fichas dos 8 Players</h1>
+
+<section id="joel" class="section">
+<h2>01 · Joel Yi (Sales Possible / Scale Team Circle)</h2>
+<p><strong>Posicionamento:</strong> Sales process expert; construtor de times de venda high-ticket para coaches/consultorias $1M–$10M+. Posiciona "venda emotiva" sem script robótico e ativa bases mortas com IA + closer humano.</p>
+<p><strong>ICP típico:</strong> Donos de agência/coaches/educação $1M–$10M (e operadores 8 fig.) com base existente de leads não convertidos.</p>
+<p><strong>Modelo de evento:</strong> Híbrido — conteúdo orgânico (Instagram + YouTube + TEDx) com workshops/grupos de coaching ao vivo (Done-With-You) e DM funnel direto para aplicação 1:1.</p>
+
+<h3>Mecanismo: ESP (Emotional Selling Process) + Hybrid Sales Farming</h3>
+<p>Anti-script, anti-pressão. AI revive lead morto + human closer fecha. Pricing custom não publicado.</p>
+
+<h3>Estrutura</h3>
+<ul>
+  <li><strong>Pitch:</strong> via DM no Instagram — não fecha em sala. Conteúdo público → DM @officialjoelyi → aplicação → call 1:1.</li>
+  <li><strong>Oferta com/sem preço:</strong> SEM preço aparente. Preço só após aplicação aceita. "Limited Engagements Per Month" (escassez real).</li>
+  <li><strong>Estrutura do roteiro:</strong> Hook militar → Problema velocidade → Diagnóstico mercado → ESP → Prova ($30M+ gerados, 8.000+ closers) → Cases → 2 caminhos (DWY/DFY) → Gate aplicação.</li>
+</ul>
+
+<h3>Conversão</h3>
+<p>Não divulga métricas. Filtragem por aplicação. Range típico mercado: 2-8% DM-to-application; 15-35% application-to-close em high ticket.</p>
+
+<div class="highlight-box">
+<div class="label">Insights aplicáveis ao Simple</div>
+<ul style="margin: 0; padding-left: 20px;">
+  <li>DM funnel + aplicação valida modelo Simple — high ticket fecha em 1:1, não em sala</li>
+  <li>"Limited engagements per month" é frame Simple também — 2 vagas R$25k</li>
+  <li>Prova social quantificada é o anchor (8.000 closers, $250M etc.)</li>
+  <li>ICP $1M–$10M ≈ Simple ($50–300k/mês)</li>
+</ul>
+</div>
+</section>
+
+<section id="cole" class="section">
+<h2>02 · Cole Gordon (Closers.io / Full Sales System)</h2>
+<p><strong>Posicionamento:</strong> Sales infrastructure architect para coaches/consultores high ticket — constrói times de closers remotos. Já formou closers para Tony Robbins, Frank Kern, Dean Graziosi.</p>
+<p><strong>ICP típico:</strong> Coaches/consultorias/agências/infoprodutos $50k–$500k/mês querendo escalar via time de closers remotos.</p>
+<p><strong>Modelo de evento:</strong> Webinar evergreen + aplicação + call 1:1 com setter/closer. Programa principal $5k–$25k.</p>
+
+<h3>Mecanismo: Belief Ladder 8-Step</h3>
+<p><strong>Pain → Doubt → Cost → Desire → Support → Money → Willingness → Trust.</strong> Conduz prospect a self-close. Toda venda é resolvida quebrando as 7-8 crenças necessárias para comprar.</p>
+
+<h3>Estrutura</h3>
+<ul>
+  <li><strong>Roteiro:</strong> Hook autoridade (Tony Robbins, Kern, Graziosi) → Story do problema → Diagnóstico mercado → Mecanismo central → Cases → 3-5 ensinamentos práticos → Apresentação solução → CTA aplicação.</li>
+  <li><strong>Oferta:</strong> 30 Day Closer ($5k-$10k) / Remote Closing Academy / Closer Cartel / DWY consulting ($20k+).</li>
+  <li><strong>Ancoragem:</strong> Custo de oportunidade + comparação com SDR/closer in-house ($60k+/ano).</li>
+  <li><strong>Escassez:</strong> Cohort/wave-based — turmas com data de início.</li>
+</ul>
+
+<h3>Conversão</h3>
+<p>Não publica métricas. Reporta $2.5M/mês de receita do business. Estimativas mercado: 1-4% application em frio, 10-25% application-to-close.</p>
+
+<div class="highlight-box">
+<div class="label">Insights aplicáveis ao Simple</div>
+<ul style="margin: 0; padding-left: 20px;">
+  <li><strong>Belief Ladder 8-Step é o melhor framework de pitch consultivo</strong> — sala quebra Pain/Doubt/Cost/Desire; closer fecha as outras 4</li>
+  <li>Pitch para aplicação (não checkout) é o modelo correto para R$25k</li>
+  <li>Roster de clientes Tier 1 (Tony Robbins) ≈ Simple tem Pablo Marçal via Luiz Filho</li>
+  <li>Escassez "cohort" funciona melhor que escassez artificial</li>
+  <li>Conteúdo educacional no meio reduz resistência ao pitch</li>
+</ul>
+</div>
+</section>
+
+<section id="erico" class="section">
+<h2>03 · Erico Rocha (Ignição Digital / Fórmula de Lançamento)</h2>
+<p><strong>Posicionamento:</strong> Pioneiro do PLF (Product Launch Formula) no Brasil — adaptou método de Jeff Walker.</p>
+<p><strong>ICP típico:</strong> Infoprodutor/especialista que quer fazer lançamento; do iniciante ao já-faturando 6/7 dígitos.</p>
+<p><strong>Modelo de evento:</strong> Workshop gratuito online (3 CPLs + abertura de carrinho). É o pai do modelo CPL no Brasil.</p>
+
+<h3>Mecanismo: Fórmula de Lançamento (Semente → Interno → Externo → Perpétuo)</h3>
+<p>Método de 4 lançamentos construído sobre os 7 gatilhos mentais.</p>
+
+<h3>Estrutura</h3>
+<ul>
+  <li><strong>CPL1 — A Oportunidade:</strong> apresentação → promessa "impossível" → depoimentos → origin story → conteúdo → gancho CPL2.</li>
+  <li><strong>CPL2 — A Transformação:</strong> reforço → nova promessa → review com prova → conteúdo novo → menção casual da oferta → CTA.</li>
+  <li><strong>CPL3 — A Experiência + Oferta:</strong> recap → primeira metade = amostra de conteúdo → <strong>segunda metade = OFERTA com ancoragem, escassez, preço</strong>.</li>
+  <li><strong>Oferta:</strong> Fórmula de Lançamento (6 sem, 50+h vídeo) · ~R$6k à vista · <em>30 dias incondicional</em>.</li>
+  <li><strong>Escassez:</strong> Carrinho aberto 1-2x/ano, janela de 5 dias, "vagas esgotam em 4h".</li>
+</ul>
+
+<h3>Conversão</h3>
+<p>Não divulgada. Estimativa benchmark: 1-3% sobre lista total inscrita; 5-15% sobre quem assiste CPL3.</p>
+
+<div class="highlight-box">
+<div class="label">Insights aplicáveis ao Simple</div>
+<ul style="margin: 0; padding-left: 20px;">
+  <li>Estrutura de pitch concentrada no final é validada por 10+ anos</li>
+  <li>Origin story + mecanismo nomeado = coluna vertebral</li>
+  <li>Janela curta + escassez de vagas funciona mesmo com público quente</li>
+  <li><strong>CUIDADO:</strong> CPL puro é gratuito e foca volume; Simple é sala secreta de base — usar Erico como referência de estrutura de pitch, não de modelo de evento</li>
+</ul>
+</div>
+</section>
+
+<section id="ferrari" class="section">
+<h2>04 · Leandro Ferrari (xFlow / Scale Mentoring)</h2>
+<p><strong>Posicionamento:</strong> Estrategista digital high ticket, co-fundador xFlow (R$96M+ faturados); referência em lançamento pago + mentoria de elite.</p>
+<p><strong>ICP típico:</strong> Lançador/co-produtor/expert que já fatura mínimo R$150k/ano. Scale Black: já no patamar de alta performance.</p>
+<p><strong>Modelo de evento:</strong> Imersão presencial paga Discovery (3 dias, agosto) + minissérie gratuita de captura (7 dias) que abre aplicação para Scale Mentoring/Scale Black.</p>
+
+<h3>Mecanismo: Corredor Polonês</h3>
+<p>Método proprietário de lançamento (combina posicionamento + tráfego + conversão sistematicamente).</p>
+
+<h3>Estrutura</h3>
+<ul>
+  <li><strong>Discovery 3 dias:</strong> Dia 1 Diagnóstico → Dia 2 Método (bastidores técnicos) → <strong>Dia 3 Pitch (revelação de Scale Black)</strong></li>
+  <li><strong>Minissérie 7 dias:</strong> 1-3 prova/bastidores · 4-5 método · 6-7 convite/aplicação</li>
+  <li><strong>Pitch:</strong> Sem pitch direto — modelo de captura → aplicação → call 1:1</li>
+  <li><strong>Oferta:</strong> Scale Mentoring (90d) e Scale Black (elite). Preço não público (R$25-60k anuais estimativa)</li>
+</ul>
+
+<h3>Prova</h3>
+<p>R$96M xFlow · R$498M alunos · R$380M atribuídos ao Corredor Polonês · 1.900+ alunos · NPS 96.</p>
+
+<div class="highlight-box">
+<div class="label">Insights aplicáveis ao Simple</div>
+<ul style="margin: 0; padding-left: 20px;">
+  <li><strong>Modelo de aplicação (não compra direta) é o MAIS PRÓXIMO do caso Simple</strong></li>
+  <li>Filtro de qualificação no início ("só pra quem já fatura X") aumenta exclusividade</li>
+  <li>Mecanismo nomeado ("Corredor Polonês") vira ativo de venda</li>
+  <li>Pitch concentrado no último terço</li>
+  <li>Múltiplos sócios endossando — Daniel pode trazer Luiz Filho</li>
+</ul>
+</div>
+</section>
+
+<section id="baldan" class="section">
+<h2>05 · William Baldan (Orbyka / Workshop Lançamento Pago)</h2>
+<p><strong>Posicionamento:</strong> Especialista em Lançamento Pago — data-driven, técnico, foco em métricas. 24 lançamentos pagos · R$55M+ faturados.</p>
+<p><strong>ICP típico:</strong> Lançador/infoprodutor/co-produtor que quer dominar lançamento pago.</p>
+<p><strong>Modelo de evento:</strong> <strong>Workshop Pago de 2 dias (16h)</strong> — estado da arte do "workshop pago" no Brasil.</p>
+
+<h3>Mecanismo: Lançamento Pago</h3>
+<p>Funil em que o lead paga pelo ingresso (qualificação financeira) → workshop de alto valor → conversão na sala.</p>
+
+<h3>Estrutura</h3>
+<ul>
+  <li><strong>Horário:</strong> sex/sáb · 09h30 às 17h30 · 16h totais (5ª edição)</li>
+  <li><strong>7 módulos:</strong> Planejamento → Promessas/Criativos → Tráfego → LP → Captação → Conteúdo → <em>Pitch (módulo 7)</em></li>
+  <li><strong>Pitch:</strong> upsell pra Mentoria Rise, final do Dia 2 (~87-90% do tempo)</li>
+  <li><strong>Oferta:</strong> Workshop R$25.994 (último lote 5ª edição) · Mentoria Rise (aplicação)</li>
+  <li><strong>Garantia:</strong> reembolso em até 2 dias após o evento</li>
+</ul>
+
+<h3>Conversão (ÚNICO COM NÚMERO PÚBLICO)</h3>
+<p><strong>11-20% na sala</strong> (workshop pago) · Comparecimento <strong>50-75%</strong>.</p>
+<p>Esses números viraram benchmark de mercado para "workshop pago" no Brasil. Retenção brutal: <strong>90% em 16h</strong>.</p>
+
+<div class="highlight-box">
+<div class="label">Insights aplicáveis ao Simple</div>
+<ul style="margin: 0; padding-left: 20px;">
+  <li>Conversão 11-20% público frio = benchmark sólido (Simple base MQL morna: piso 15%, teto 30%)</li>
+  <li>Pitch nos últimos 10-15% do tempo total</li>
+  <li>Demonstrar o método executando-o ao vivo é o truque central</li>
+  <li><strong>CUIDADO:</strong> Baldan vende método de R$25k a lançadores (compra direta); Simple vende consultoria via aplicação → call</li>
+</ul>
+</div>
+</section>
+
+<section id="victor" class="section">
+<h2>06 · Victor Damásio (Maestria Ao Vivo / PAM)</h2>
+<p><strong>Posicionamento:</strong> "Mentor dos Mentores" — ensinar profissionais a estruturarem mentoria de alto valor. 60+ meses consecutivos faturando 7 dígitos/mês.</p>
+<p><strong>ICP típico:</strong> Especialista/terapeuta/consultor/coach que quer transformar conhecimento em mentoria high ticket.</p>
+<p><strong>Modelo de evento:</strong> <strong>Maestria Online Experience</strong> — desafio imersivo 3 dias online (29h) com preço baixo de entrada (R$10-997) que converte pra mentorias high ticket. <strong>Modelo MAIS PARECIDO com o caso Simple.</strong></p>
+
+<h3>Mecanismo: 4 Pilares + Funil Invertido</h3>
+<p>Funil Invertido = vender alto primeiro (contraria sabedoria comum de "começar com tripwire").</p>
+
+<h3>Estrutura</h3>
+<ul>
+  <li><strong>29h em 3 dias:</strong> Dias 1-2 (9h-20h) · Dia 3 (9h-18h)</li>
+  <li><strong>Dia 1:</strong> Mindset &amp; Essentials (sistemas crença, IA, frameworks, comunidade, posicionamento)</li>
+  <li><strong>Dia 2:</strong> Strategy/Products/Offers (currículo mentoria, conteúdo, audiência IG, storytelling)</li>
+  <li><strong>Dia 3:</strong> Positioning &amp; <strong>PITCH FORTE → APLICAÇÃO</strong> (Vida de Mentor / PAM)</li>
+  <li><strong>Hierarquia produtos:</strong> Maestria R$10-997 (front-end) → Vida de Mentor ~R$15k → PAM R$30k+</li>
+  <li><strong>Stack PAM:</strong> 7 bônus com nomes (Sobral, Albertoni, Kaminski, etc) — autoridade emprestada</li>
+</ul>
+
+<h3>Conversão</h3>
+<p><strong>35% de conversão em pitch de R$15k</strong> (público pago R$10-997). Maior % pública dos 4 brasileiros.</p>
+
+<div class="highlight-box">
+<div class="label">Insights aplicáveis ao Simple — PRIORITÁRIO</div>
+<ul style="margin: 0; padding-left: 20px;">
+  <li><strong>Modelo MAIS PRÓXIMO do Simple — estudar Victor é prioridade</strong></li>
+  <li>35% conversão em R$15k é o teto realista com (a) público pré-qualificado, (b) entrega densa de valor, (c) pitch claro com mecanismo nomeado</li>
+  <li>Funil Invertido valida estratégia Simple (ir direto pra R$25k sem produto barato pra esquentar)</li>
+  <li>Mecanismo nomeado dobrado (4 Pilares + Funil Invertido) cria sensação de "sistema completo"</li>
+  <li>Stack de bônus com nomes de figuras conhecidas eleva valor percebido</li>
+</ul>
+</div>
+</section>
+
+<section id="brunson" class="section">
+<h2>07 · Russell Brunson (ClickFunnels / Perfect Webinar)</h2>
+<p><strong>Posicionamento:</strong> Co-fundador ClickFunnels, autor DotCom Secrets, Expert Secrets, Traffic Secrets. Pai do "webinar de venda" moderno — Perfect Webinar Script é template estrutural mais copiado dos últimos 15 anos.</p>
+<p><strong>ICP típico:</strong> Experts/coaches/autores/agências/infoprodutos vendendo $497-$2.997 via webinar.</p>
+<p><strong>Modelo de evento:</strong> Webinar ao vivo (e automatizado depois) de 60-90 min com pitch integrado ao final. Checkout direto na sala.</p>
+
+<h3>Mecanismo: One Thing + 3 Secrets</h3>
+<p>Quebra as 3 false beliefs: <strong>Vehicle</strong> (seu produto/método funciona) · <strong>Internal</strong> (você é capaz) · <strong>External</strong> (fatores externos não te impedem).</p>
+
+<h3>Estrutura (Perfect Webinar Script)</h3>
+<ul>
+  <li><strong>Bloco 1 — Intro (5-15 min):</strong> Big Promise · Hook to End · Qualify Yourself · Future Pace · Origin Story / Epiphany Bridge</li>
+  <li><strong>Bloco 2 — Conteúdo (30-60 min):</strong> The One Thing + Secret #1 (vehicle) + Secret #2 (internal) + Secret #3 (external)</li>
+  <li><strong>Bloco 3 — Transição:</strong> "agora que você sabe X, deve estar se perguntando 'como faço?'"</li>
+  <li><strong>Bloco 4 — Stack &amp; Close (15-20 min):</strong> The Stack item por item · Price Reveal em 3 camadas · Bônus · Garantia · Scarcity · Q&amp;A com close</li>
+  <li><strong>Pitch:</strong> minuto 60-70 de 90 (~70-78%)</li>
+  <li><strong>Oferta:</strong> Curso $497-$2.997 · 5-8 itens no stack · valor estacado $8-11k ancorando preço $997</li>
+  <li><strong>Escassez:</strong> 30-min countdown timer ao vivo + fast action bonuses</li>
+</ul>
+
+<h3>Conversão</h3>
+<p>Frio: 5-10% (registrados → comprou). Quente: <strong>10-15% (15% benchmark dele)</strong>. Calculado sobre attendees, não registrados.</p>
+
+<div class="highlight-box">
+<div class="label">Insights aplicáveis ao Simple</div>
+<ul style="margin: 0; padding-left: 20px;">
+  <li><strong>Estrutura 4 blocos é o esqueleto universal</strong> — adaptado para Simple: Intro (Pablo/Luiz) → 3 Secrets sobre aquisição → Transition → Stack consultoria</li>
+  <li>3 Secrets vehicle/internal/external é OURO para os 600 MQL parados</li>
+  <li>PORÉM: checkout direto NÃO se aplica. Simple → aplicação</li>
+  <li>Trial closes constantes ("faz sentido?") devem rodar a sala inteira (1.000+ "sim" em 90 min)</li>
+  <li>Timer de bônus funciona MESMO em modelo aplicação: "5 primeiras aplicações passam direto"</li>
+</ul>
+</div>
+</section>
+
+<section id="hormozi" class="section">
+<h2>08 · Alex Hormozi (Acquisition.com)</h2>
+<p><strong>Posicionamento:</strong> Operador-empresário que escalou Gym Launch a 9 figuras antes de fundar Acquisition.com (PE/holding). Autor $100M Offers, $100M Leads, $100M Money Models. Referência mundial em construção de oferta high ticket.</p>
+<p><strong>ICP típico:</strong> Empresários $1M–$30M/ano (Acquisition.com: PMEs $3M–$150M).</p>
+<p><strong>Modelo de evento:</strong> <strong>Mega-launch event</strong> — livestream 9,5-10h no YouTube com pitch integrado. $100M Leads launch (2023) = $4.4M em 90 minutos. 500k+ attendees ao vivo.</p>
+
+<h3>Mecanismo: Value Equation + Grand Slam Offer</h3>
+<p style="font-family: var(--font-mono); background: var(--bg-card); padding: 16px; border-radius: 6px; text-align: center;">VALUE = (Dream Outcome × Perceived Likelihood) ÷ (Time Delay × Effort)</p>
+<p>Toda oferta arquitetada para maximizar numerador e minimizar denominador. <strong>Grand Slam Offer:</strong> oferta tão boa que comparar é constrangedor.</p>
+
+<h3>Estrutura ($100M Money Models Launch 2025)</h3>
+<ul>
+  <li><strong>Abertura monumental</strong> (recorde Guinness, framing evento-marco da década)</li>
+  <li><strong>Bloco teaching</strong> com slide rápido (5-10s/slide), conteúdo denso</li>
+  <li><strong>Free Offer Reveal</strong> ("se você está ao vivo, ganha 4 cursos + audiobook + livro + 90 dias Skool")</li>
+  <li><strong>Headliners convidados</strong> (6 pessoas — prova social distribuída)</li>
+  <li><strong>Live Q&amp;A</strong> + <strong>Hormozi Hotline</strong> (pega ligações reais ao vivo)</li>
+  <li><strong>Bonus stack:</strong> Premium Bundle $5.998 com 12 playbooks + ACQ AI lifetime</li>
+  <li><strong>Super-upsell:</strong> Bundle 800 cópias / $18k em 6 parcelas</li>
+  <li><strong>Hard deadline countdown</strong></li>
+</ul>
+
+<h3>Conversão</h3>
+<p>$8.80 por attendee no $100M Leads launch (500k attendees, $4.4M em 90 min). Money Models 2025: $81M em um único dia. Não publica %, mas dollar-per-attendee é o melhor proxy.</p>
+
+<div class="highlight-box">
+<div class="label">Insights aplicáveis ao Simple</div>
+<ul style="margin: 0; padding-left: 20px;">
+  <li><strong>Value Equation é o framework de construção de oferta mais aplicável</strong> — Dream Outcome / Likelihood (Pablo Marçal/Luiz) / Time Delay (X dias) / Effort (você não vira marqueteiro)</li>
+  <li>Stack ancorado em valor de mercado quantificado (cada componente com R$ específico)</li>
+  <li>NÃO copie formato 10h. Sala de 1-2h é o realista para 600 leads BR. Inspiração: densidade de pitch + multiple CTAs</li>
+  <li><strong>Hormozi Hotline é o move mais "stealable"</strong> — abrir mic/chat para 2-3 perguntas reais e diagnosticar ao vivo</li>
+  <li>Live counter de aplicações é gatilho fortíssimo</li>
+  <li>Frame de "diagnóstico gratuito" (não "venda") reduz fricção drasticamente</li>
+</ul>
+</div>
+</section>
+
+<hr>
+
+<div style="margin-top: 64px; padding: 32px; background: var(--bg-card); border-radius: 12px; text-align: center;">
+  <p style="font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-mute); margin: 0;">Pesquisa concluída em 30/05/2026</p>
+  <p style="margin-top: 12px; color: var(--text-soft);">Cruzando 3+ fontes públicas por player · ~50 URLs únicas consultadas</p>
+  <p style="margin-top: 8px; color: var(--text-mute); font-size: 0.85rem;">Próxima fase: Briefing Estratégico</p>
+</div>
+
+</main>
+</div>
+
+<script>
+// Active link on scroll
+const sections = document.querySelectorAll('section.section');
+const navLinks = document.querySelectorAll('.nav a');
+
+function setActive() {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) current = section.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+}
+
+window.addEventListener('scroll', setActive);
+setActive();
+
+// Smooth scroll
+navLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      window.scrollTo({ top: target.offsetTop - 24, behavior: 'smooth' });
+      document.querySelector('.sidebar').classList.remove('open');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
